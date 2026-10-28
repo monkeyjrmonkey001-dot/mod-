@@ -1,0 +1,92 @@
+-- Cyberpunk 2077 CET Mod Menu - Extended Safe Version
+-- Place in: Cyberpunk 2077/bin/x64/plugins/cyber_engine_tweaks/scripts/
+
+showMenu = false
+
+-- Toggle menu hotkey
+registerHotkey("openMenu", "Open Mod Menu", function()
+    showMenu = not showMenu
+end)
+
+-- CET UI rendering
+function drawMenu()
+    if not showMenu then return end
+
+    ImGui.Begin("Extended Mod Menu")
+
+    -- Weather control
+    if ImGui.Button("Weather: Clear") then Game.SetWeather("Clear", true) end
+    if ImGui.Button("Weather: Rain") then Game.SetWeather("Rain", true) end
+
+    ImGui.Separator()
+
+    -- Spawn vehicle
+    if ImGui.Button("Spawn Quadra Turbo") then
+        Game.SpawnVehicle("Vehicle.Quadra_Turbo_R")
+    end
+
+    ImGui.Separator()
+
+    -- Spawn weapons
+    if ImGui.Button("Spawn Mantis Blades") then
+        Game.AddToInventory("Items.MantisBlades", 1)
+    end
+    if ImGui.Button("Spawn Legendary Katana") then
+        Game.AddToInventory("Items.Katana", 1)
+    end
+    if ImGui.Button("Spawn Iconic Revolver") then
+        Game.AddToInventory("Items.Doom", 1)
+    end
+
+    ImGui.Separator()
+
+    -- Money edit
+    if ImGui.Button("Add 100,000 Eddies") then
+        Game.AddToInventory("Items.money", 100000)
+    end
+
+    ImGui.Separator()
+
+    -- Player level edit
+    if ImGui.Button("Set Level to 50") then
+        Game.GetStatsSystem():SetLevel(Game.GetPlayer(), "Level", 50)
+    end
+
+    -- Street Cred edit
+    if ImGui.Button("Set Street Cred to 50") then
+        Game.GetStatsSystem():SetLevel(Game.GetPlayer(), "StreetCred", 50)
+    end
+
+    ImGui.Separator()
+
+    -- Skill points
+    if ImGui.Button("Add 10 Skill Points") then
+        Game.AddToInventory("Items.SkillPoints", 10)
+    end
+
+    -- Attribute points
+    if ImGui.Button("Add 10 Attribute Points") then
+        Game.AddToInventory("Items.AttributePoints", 10)
+    end
+
+    ImGui.Separator()
+
+    -- Simulated New Game Plus
+    if ImGui.Button("New Game Plus") then
+        print("[NG+] Resetting world state...")
+        -- This is a simulated NG+; actual NG+ requires save editing
+        Game.TeleportToLocation(Game.GetPlayer(), Vector3.new(-1234.0, 567.0, 45.0))
+        Game.SetTimeOfDay(8.0)
+        -- Could add more reset logic here
+    end
+
+    ImGui.End()
+end
+
+-- Hook into CET draw loop
+registerForEvent("onDraw", drawMenu)
+
+-- Initialization message
+registerForEvent("onInit", function()
+    print("[Extended Mod Menu] Loaded successfully.")
+end)
